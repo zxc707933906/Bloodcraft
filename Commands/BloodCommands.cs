@@ -58,7 +58,7 @@ internal static class BloodCommands
 
         if (data.Key > 0)
         {
-            LocalizationService.HandleReply(ctx, $"You're level [<color=white>{data.Key}</color>][<color=#90EE90>{prestigeLevel}</color>] and have <color=yellow>{progress}</color> <color=#FFC0CB>essence</color> (<color=white>{BloodSystem.GetLevelProgress(steamID, bloodHandler)}%</color>) in <color=red>{bloodHandler.GetBloodType()}</color>");
+            LocalizationService.HandleReply(ctx, $"你当前的血型等级为 [<color=white>{data.Key}</color>][<color=#90EE90>{prestigeLevel}</color>]  <color=yellow>{progress}</color> <color=#FFC0CB>essence</color> (<color=white>{BloodSystem.GetLevelProgress(steamID, bloodHandler)}%</color>)  <color=red>{bloodHandler.GetBloodType()}</color>");
 
             if (steamID.TryGetPlayerBloodStats(out var bloodStats) && bloodStats.TryGetValue(bloodType, out var stats))
             {
@@ -75,12 +75,12 @@ internal static class BloodCommands
                 {
                     var batch = bonusBloodStats.Skip(i).Take(6);
                     string bonuses = string.Join(", ", batch.Select(stat => $"<color=#00FFFF>{stat.Key}</color>: <color=white>{stat.Value}</color>"));
-                    LocalizationService.HandleReply(ctx, $"Current blood stat bonuses: {bonuses}");
+                    LocalizationService.HandleReply(ctx, $"当前的血型加成: {bonuses}");
                 }
             }
             else
             {
-                LocalizationService.HandleReply(ctx, "No bonuses from legacy.");
+                LocalizationService.HandleReply(ctx, "没有转生加成.");
             }
         }
         else
@@ -104,7 +104,7 @@ internal static class BloodCommands
         LocalizationService.HandleReply(ctx, $"Blood Legacy logging {(PlayerUtilities.GetPlayerBool(SteamID, "BloodLogging") ? "<color=green>enabled</color>" : "<color=red>disabled</color>")}.");
     }
 
-    [Command(name: "choosestat", shortHand: "cst", adminOnly: false, usage: ".bl cst [Blood] [BloodStat]", description: "Choose a blood stat to enhance based on your legacy.")]
+    [Command(name: "choosestat", shortHand: "cst", adminOnly: false, usage: ".bl cst [Blood] [BloodStat]", description: "选择一个血型加成属性.")]
     public static void ChooseBloodStat(ChatCommandContext ctx, string blood, string statType)
     {
         if (!ConfigService.BloodSystem)
@@ -115,13 +115,13 @@ internal static class BloodCommands
 
         if (!Enum.TryParse<BloodStats.BloodStatType>(statType, true, out var StatType))
         {
-            LocalizationService.HandleReply(ctx, "Invalid blood stat choice, use '.bl lst' to see options.");
+            LocalizationService.HandleReply(ctx, "无效的选择, 输入 '.bl lst' 查看可选属性.");
             return;
         }
 
         if (!Enum.TryParse<BloodType>(blood, true, out var BloodType))
         {
-            LocalizationService.HandleReply(ctx, "Invalid blood type, use '.bl l' to see options.");
+            LocalizationService.HandleReply(ctx, "无效的选择, use '.bl l' 查看可选属性.");
             return;
         }
 
@@ -135,7 +135,7 @@ internal static class BloodCommands
 
         if (ChooseStat(steamID, BloodType, StatType))
         {
-            LocalizationService.HandleReply(ctx, $"<color=#00FFFF>{StatType}</color> has been chosen for <color=red>{BloodType}</color> and will apply after refreshing blood.");
+            LocalizationService.HandleReply(ctx, $"<color=#00FFFF>{StatType}</color> 已被选择 <color=red>{BloodType}</color> 重新吸血获得加成.");
 
             Entity player = ctx.Event.SenderCharacterEntity;
             BloodType bloodType = GetCurrentBloodType(player);
@@ -180,12 +180,12 @@ internal static class BloodCommands
                     ResetStats(steamID, bloodType);
                     //UpdateBloodStats(character, bloodType);
 
-                    LocalizationService.HandleReply(ctx, $"Your blood stats have been reset for <color=red>{bloodType}</color>.");
+                    LocalizationService.HandleReply(ctx, $"血型已重置 <color=red>{bloodType}</color>.");
                 }
             }
             else
             {
-                LocalizationService.HandleReply(ctx, $"You do not have the required item to reset your blood stats (<color=#ffd9eb>{item.GetPrefabName()}</color> x<color=white>{quantity}</color>)");
+                LocalizationService.HandleReply(ctx, $"没有足够的物品来重置血型 (<color=#ffd9eb>{item.GetPrefabName()}</color> x<color=white>{quantity}</color>)");
             }
         }
         else
@@ -217,8 +217,8 @@ internal static class BloodCommands
         string bloodStatsLine1 = string.Join(", ", bloodStatsWithCaps.Take(halfLength));
         string bloodStatsLine2 = string.Join(", ", bloodStatsWithCaps.Skip(halfLength));
 
-        LocalizationService.HandleReply(ctx, $"Available blood stats (1/2): {bloodStatsLine1}");
-        LocalizationService.HandleReply(ctx, $"Available blood stats (2/2): {bloodStatsLine2}");
+        LocalizationService.HandleReply(ctx, $"可用的血型属性选择 (1/2): {bloodStatsLine1}");
+        LocalizationService.HandleReply(ctx, $"可用的血型属性选择 (2/2): {bloodStatsLine2}");
     }
 
     [Command(name: "set", adminOnly: true, usage: ".bl set [Player] [Blood] [Level]", description: "Sets player Blood Legacy level.")]
